@@ -1,0 +1,70 @@
+<%= form_tag ({ :action => 'playgame' }) %>
+ <% if @cardtable.game.num_cards > 0 %>
+    <%# As there are some cards on the table, the game COULD be in play %>
+
+    <% dealerScore = @cardtable.dealer.score.handScore %>
+    <% playerScore = @cardtable.player.score.handScore %>
+
+    <%# If any of the hands are bust, well then game over man %>
+    <% if playerScore > 21 || dealerScore > 21 %>
+      <% gameOn = false %>
+
+    <%# If the player isn't bust and the dealer hasn't starting yet... %>
+    <% elsif @cardtable.dealer.hand[1].faceup == false %>
+      <% gameOn = true %>
+
+   <%# If the dealer is playing but isn't winning yet... %>
+    <% elsif dealerScore < playerScore %>
+      <% gameOn = true %>
+    <% else %>
+      <%# The only time we get here is when the dealer's hand is < 21 but %>
+      <%# yet he has still beaten the player %>
+      <% gameOn = false %>
+    <% end %>
+
+    <%# Now we've determine whether the game is in play or not, we need %>
+    <%# to determine who's turn it is %>
+    <% if gameOn && @cardtable.dealer.hand[1].faceup == true %>
+      <% dealerTurn = true %>
+    <% else %>
+      <% dealerTurn = false %>
+    <% end %>
+
+  <% else %>
+    <%# As there's no cards on the table, the game can't be in play %>
+    <% gameOn = false %>
+    <% dealerTurn = false %>
+  <% end %>
+
+  <%# Disable the GODEALER button if the game is not the dealer's turn %>
+  <%# The game is implicitly in place in this situation but we need to check %>
+  <%# for this as the it might be dealer's turn but we've finished the game %>
+  <%= submit_tag "Deal For The Dealer", :name => "submit", :disabled => !(gameOn && dealerTurn) %>
+
+  <%# Disable the DEAL button only if the game is in play %>
+  <%= submit_tag "Deal", :name => "submit", :disabled => gameOn %>
+
+  <%# Disable the HIT button if the game isn't in play or it's the dealer's turn%>
+  <%= submit_tag "Hit", :name => "submit", :disabled => !gameOn||dealerTurn %>
+
+  <%# Disable the STAND button if the game isn't in play or it's the dealer's turn %>
+  <%= submit_tag "Stand", :name => "submit", :disabled => !gameOn||dealerTurn %>
+
+  <%# Disable the DOUBLE button if the game's not in play or the player %>
+  <%# doesn't have 2 cards or if it's the dealer's turn %>
+  <% disableDouble = !gameOn || !(@cardtable.game.num_cards==2) || dealerTurn %>
+  <%= submit_tag "Double", :name => "submit", :disabled => disableDouble %>
+
+  <%# Disable the SHUFFLE button if the game is on %>
+  <%= submit_tag "Shuffle", :name => "submit", :disabled => gameOn %>
+
+  <%= image_tag "/images/chips.jpg" %>
+  <%# Disable the REDUCE BET button if the game is on or the bet is 1 %>
+  <% betStatus = gameOn || @cardtable.bet == 1 %>
+  <%= submit_tag "<", :name => "submit", :disabled => betStatus %>
+  <% betString = "Bet: " + @cardtable.bet.to_s %>
+  <label><%= betString %></label>
+  <%# Disable the INCREASE BET button if the game is on or the bet is 100 %>
+  <% betStatus = gameOn || @cardtable.bet > 99 %>
+  <%= submit_tag ">", :name => "submit", :disabled => betStatus %>
+<% form_tag %>

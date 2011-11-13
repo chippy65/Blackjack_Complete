@@ -1,0 +1,7 @@
+<h1>Dealer's Hand</h1>
+<%= render :partial => "hand", :collection => @cardtable.dealer.hand %>
+</br>
+<%= render :partial => "buttons", :locals => { :buttons => @cardtable } %>
+</br>
+<%= render :partial => "hand", :collection => @cardtable.player.hand %>
+<h1><%= @cardtable.player_record.username %>'s Hand</h1>

@@ -1,0 +1,50 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Username:</b>
+  <%= @game.username %>
+</p>
+
+<p>
+  <b>Session num:</b>
+  <%= @game.session_num %>
+</p>
+
+<p>
+  <b>Game num:</b>
+  <%= @game.game_num %>
+</p>
+
+<p>
+  <b>Win:</b>
+  <%= @game.win %>
+</p>
+
+<p>
+  <b>Amount:</b>
+  <%= @game.amount %>
+</p>
+
+<p>
+  <b>Num cards:</b>
+  <%= @game.num_cards %>
+</p>
+
+<p>
+  <b>Card count:</b>
+  <%= @game.card_count %>
+</p>
+
+<p>
+  <b>Dealer count:</b>
+  <%= @game.dealer_count %>
+</p>
+
+<p>
+  <b>Date time:</b>
+  <%= @game.date_time %>
+</p>
+
+
+<%= link_to 'Edit', edit_game_path(@game) %> |
+<%= link_to 'Back', games_path %>

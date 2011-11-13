@@ -1,0 +1,2 @@
+module CardtableHelper
+end

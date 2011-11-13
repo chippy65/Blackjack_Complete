@@ -1,0 +1,37 @@
+<h1>Listing Players Stats</h1>
+<p id="notice"><%= notice %></p>
+<table>
+  <tr>
+    <th>Player</th>
+    <th>Games Played</th>
+    <th>Games Lost</th>
+    <th>Games Won</th>
+    <th>Balance</th>
+    <th>Cashflow</th>
+    <th>Number of Sessions</th>
+    <th>Average Number of Games per Session</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @users.each do |user| %>
+  <tr>
+    <td><%= user.username %></td>
+    <td><%= user.games_played %></td>
+    <td><%= user.games_lost %></td>
+    <td><%= user.games_won %></td>
+    <td><%= user.balance %></td>
+    <td><%= user.cashflow %></td>
+    <td><%= user.num_sessions %></td>
+    <td><%= user.games_per_session_avg %></td>
+    <td><%= link_to 'Show', user %></td>
+    <td><%= link_to 'Edit', edit_user_path(user) %></td>
+    <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New User', new_user_path %>

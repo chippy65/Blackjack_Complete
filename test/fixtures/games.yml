@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  username: MyString
+  session_num: 1
+  game_num: 1
+  win: false
+  amount: 9.99
+  num_cards: 1
+  card_count: 1
+  dealer_count: 1
+  date_time: 2011-10-31 20:21:44
+
+two:
+  username: MyString
+  session_num: 1
+  game_num: 1
+  win: false
+  amount: 9.99
+  num_cards: 1
+  card_count: 1
+  dealer_count: 1
+  date_time: 2011-10-31 20:21:44

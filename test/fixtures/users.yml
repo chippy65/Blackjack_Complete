@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  username: MyString
+  crypted_password: MyString
+  password_salt: MyString
+  persistence_token: MyString
+  games_played: 1
+  games_lost: 1
+  games_won: 1
+  balance: 9.99
+  cashflow: 9.99
+  num_sessions: 1
+  games_per_session_avg: 1
+
+two:
+  username: MyString
+  crypted_password: MyString
+  password_salt: MyString
+  persistence_token: MyString
+  games_played: 1
+  games_lost: 1
+  games_won: 1
+  balance: 9.99
+  cashflow: 9.99
+  num_sessions: 1
+  games_per_session_avg: 1
