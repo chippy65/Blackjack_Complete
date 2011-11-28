@@ -1,7 +1,12 @@
 <h1>Dealer's Hand</h1>
 <%= render :partial => "hand", :collection => @cardtable.dealer.hand %>
+<% score =  @cardtable.game.dealer_count < 22 ? @cardtable.game.dealer_count : "bust" %>
+<%= score %>
 </br>
 <%= render :partial => "buttons", :locals => { :buttons => @cardtable } %>
 </br>
 <%= render :partial => "hand", :collection => @cardtable.player.hand %>
+<% score =  @cardtable.game.card_count < 22 ? @cardtable.game.card_count : "bust" %>
+<%= score %>
+</br>
 <h1><%= @cardtable.player_record.username %>'s Hand</h1>

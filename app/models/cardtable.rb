@@ -24,6 +24,27 @@ class Cardtable < ActiveRecord::Base
     self.player_record.num_sessions += 1
     self.player_record.save
 
+    # Set up a new game object and initialise it.
+    newgame
+
+    # Create a new shuffled desk of cards - we shuffle in case our logic always arranges
+    # the cards in the deck the same way.
+    self.deck = Deck.new
+    shuffle
+
+    # Create a new dealer object
+    self.dealer = Player.new
+
+    # Create a new player object
+    self.player = Player.new
+
+    # Set the bet to be 5 initially
+    self.bet = 5
+
+  end
+
+  def newgame
+
     # Create a new game object/record but don't save it just yet
     # as the player may not actually decide to play a game in this session
     @game = self.build_game
@@ -40,22 +61,6 @@ class Cardtable < ActiveRecord::Base
     self.game.amount = 0
     self.game.num_cards, self.game.dealer_num_cards = 0, 0
     self.game.card_count, self.game.dealer_count = 0, 0
-
-    # Save the game here for testing purposes
-#    self.game.save
-
-    # Create a new shuffled desk of cards
-    self.deck = Deck.new
-
-    # Create a new dealer object
-    self.dealer = Player.new
-
-    # Create a new player object
-    self.player = Player.new
-
-    # Set the bet to be 5 initially
-    self.bet = 5
-
   end
 
   def setBet(amount)
@@ -74,12 +79,16 @@ class Cardtable < ActiveRecord::Base
       self.game.num_cards, self.game.dealer_num_cards = 0, 0
       self.game.card_count, self.game.dealer_count = 0, 0
 
-     # Reset the player and dealer objects
-      self.player = self.player.reset
+      # Reset the player and dealer objects
+      self.player.reset
+
       # If we don't make the second dealer card faceup, then this could be
-      # dealt to a player
+      # dealt to a player - not sure this is true really as cards are dealt from the deck
       self.dealer.hand[1].faceup = true
-      self.dealer = self.dealer.reset
+      self.dealer.reset
+
+      # Create a new game object and initialise it
+      newgame
     end
 
 
@@ -154,6 +163,13 @@ class Cardtable < ActiveRecord::Base
 
     # If the player is bust then we don't need to do anything - the stats have
     # already been saved and the view will take care of starting a new game 
+
+    # Try to rub salt into the player's wound by showing the dealer's hidden card if the
+    # player has bust.
+    if self.game.card_count > 21
+      self.dealer.hand[1].faceup = true
+      endGame
+    end
   end
 
   def stand
@@ -180,6 +196,8 @@ class Cardtable < ActiveRecord::Base
     # If they're not bust, give control to the dealer and play its hand
     if self.player.score.handScore < 22
       stand
+    else
+      endGame
     end
   end
 
@@ -192,7 +210,19 @@ class Cardtable < ActiveRecord::Base
     # Update the stats and save
     self.game.dealer_num_cards += 1
     self.game.dealer_count = self.dealer.score.handScore
-    self.game.save
+
+    # if the dealer isn't winning yet...
+    if self.game.dealer_count < self.game.card_count
+      self.game.save
+    elsif self.game.dealer_count > 21
+      # The dealer has bust
+      # Should we tidy up the stats to show that the player has won right here or leave that
+      # to 'endGame'?
+      endGame
+    else
+      # The dealer has beaten the player 
+      endGame
+    end
   end
 
   def shuffle
@@ -201,8 +231,9 @@ class Cardtable < ActiveRecord::Base
   end
 
   def endGame
-    # Collect all the dealer cards and players cards and put them
-    # to the end of the deck
+
+    # Call this function when we've determined that a game has finished. This will save the
+    # stats.
 
     # Update the stats for the dealer
 
@@ -271,7 +302,11 @@ class Deck
 
   def deal(player)
     # Add the next card in the deck to the player's hand
-    player.hand << self.cards[self.nextcard]
+    # We need to copy the card object from the deck before appending to the hand
+    # as it will be referenced otherwise. This can cause the deck card to be 'faceup = false'
+    # when we set this attribute for the dealer's second card. This will mean that when the
+    # deck loops around on itself, that card will be dealt facedown which is wrong!
+    player.hand << self.cards[self.nextcard].dup
     player.score << self.cards[self.nextcard].score.to_i
 
     # And then increment the position in the deck of the next card to be dealt
