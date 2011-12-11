@@ -74,6 +74,12 @@ class Cardtable < ActiveRecord::Base
     # Clear out any old game data to reset
     if self.game.game_num > 0
 
+      # We need to call endGame to save the stats from teh previous game. This
+      # is necessary as the player could have hit 'stand' and the lost
+      # immediately to the dealer's 2 cards. In this case, the game will not
+      # have been saved.
+      endGame
+
       # Reset the game stuff so it can be used later in the method
       self.game.win = false
       self.game.num_cards, self.game.dealer_num_cards = 0, 0
@@ -150,25 +156,48 @@ class Cardtable < ActiveRecord::Base
 
   end
 
-  def hit
+  def hit(thisPlayer, numCards, cardCount)
     # This is where the player gets another card
 
     # Deal another card to the player
-    self.deck.deal(self.player)
+    self.deck.deal(thisPlayer)
 
     # Update the stats and save
-    self.game.num_cards += 1
-    self.game.card_count = self.player.score.handScore
+    if thisPlayer === self.player
+      self.game.num_cards += 1
+      self.game.card_count = thisPlayer.score.handScore
+    else
+      self.game.dealer_num_cards += 1
+      self.game.dealer_count = thisPlayer.score.handScore
+    end
     self.game.save
 
     # If the player is bust then we don't need to do anything - the stats have
     # already been saved and the view will take care of starting a new game 
 
-    # Try to rub salt into the player's wound by showing the dealer's hidden card if the
-    # player has bust.
-    if self.game.card_count > 21
-      self.dealer.hand[1].faceup = true
-      endGame
+    # Try to rub salt into the player's wound by showing the
+    # dealer's hidden card if the player has bust.
+    if self.game.num_cards == 0
+      # It's not the dealer who has been hit with a card but the player
+      if self.game.card_count > 21
+        self.dealer.hand[1].faceup = true
+        endGame
+      end
+    elsif self.game.num_cards > 0
+
+      # if the dealer isn't winning yet...
+      if self.game.dealer_count < self.game.card_count
+        # Save the game as usual and wait for the next card to be dealt
+        self.game.save
+      elsif self.game.dealer_count > 21
+        # The dealer has bust
+        # Should we tidy up the stats to show that the player has won
+        # right here or leave that to 'endGame'?
+        endGame
+      else
+        # The dealer has beaten the player
+        endGame
+      end
     end
   end
 
@@ -191,37 +220,11 @@ class Cardtable < ActiveRecord::Base
     self.game.amount = self.bet
 
     # Deal one more card only
-    hit
+    hit(self.player, self.game.num_cards, self.game.card_count)
 
     # If they're not bust, give control to the dealer and play its hand
     if self.player.score.handScore < 22
       stand
-    else
-      endGame
-    end
-  end
-
-  def goDealer
-    # This is where we deal to the dealer
-
-    # Deal another card to the player
-    self.deck.deal(self.dealer)
-
-    # Update the stats and save
-    self.game.dealer_num_cards += 1
-    self.game.dealer_count = self.dealer.score.handScore
-
-    # if the dealer isn't winning yet...
-    if self.game.dealer_count < self.game.card_count
-      self.game.save
-    elsif self.game.dealer_count > 21
-      # The dealer has bust
-      # Should we tidy up the stats to show that the player has won right here or leave that
-      # to 'endGame'?
-      endGame
-    else
-      # The dealer has beaten the player 
-      endGame
     end
   end
 
@@ -232,12 +235,34 @@ class Cardtable < ActiveRecord::Base
 
   def endGame
 
-    # Call this function when we've determined that a game has finished. This will save the
-    # stats.
+    # Call this function when we've determined that a game has finished.
+    # This will save the stats.
 
-    # Update the stats for the dealer
+    if self.game.dealer_count > 21
+      # If the dealer has gone bust, then the player has won. This is the
+      # only situation where the player wins. We have to reverse the stats
+      # where we assumed that the player would lose before saving the stats
 
-    # Update the stats for the player
+      # We add twice the bet to the player and subtract from the dealer
+      # This is because we already subtracted the bet from the player and
+      # added to the dealer at teh start of this game
+      self.player_record.balance += self.bet * 2
+      self.dealer_record.balance -= self.bet * 2
+
+      # Similarly, we assumed that the player lost and the dealer won
+      # So, we change this accordingly
+      self.player_record.games_lost -= 1
+      self.player_record.games_won += 1
+      self.dealer_record.games_won -= 1
+      self.dealer_record.games_lost += 1
+
+      self.game.win = true
+    end
+
+    # Save the game stats, and for the dealer and player
+    self.game.save
+    self.player_record.save
+    self.dealer_record.save
 
   end
 

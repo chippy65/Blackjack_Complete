@@ -1,12 +1,52 @@
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Scaling background</title>
+  <style type="text/css">
+html, body {
+  width: 100%;
+  height: 100%;
+  margin-top: 0px;
+  padding-top: 0px;
+  top: 0px;
+  margin-left: 0px;
+  padding-left: 0px;
+  left: 0px;
+}
+body {
+  overflow: auto;
+}
+#background {
+  min-width: 100%;
+  min-height: 100%;
+top: 2px;
+left: 0;
+background-repeat: no-repeat;
+background-image:url(/images/table.jpg);
+background-size: cover;
+}
+
+</style>
+</head>
+<body>
+<div id="background"></br>
 <h1>Dealer's Hand</h1>
 <%= render :partial => "hand", :collection => @cardtable.dealer.hand %>
 <% score =  @cardtable.game.dealer_count < 22 ? @cardtable.game.dealer_count : "bust" %>
+<% if @cardtable.game.dealer_count != 0 %>
 <%= score %>
+<% end %>
 </br>
 <%= render :partial => "buttons", :locals => { :buttons => @cardtable } %>
 </br>
 <%= render :partial => "hand", :collection => @cardtable.player.hand %>
 <% score =  @cardtable.game.card_count < 22 ? @cardtable.game.card_count : "bust" %>
+<% if @cardtable.game.card_count != 0 %>
 <%= score %>
+<% end %>
 </br>
 <h1><%= @cardtable.player_record.username %>'s Hand</h1>
+</div>
+</body>
+</head>
+</html>

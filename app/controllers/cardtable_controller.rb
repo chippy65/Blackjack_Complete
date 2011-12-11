@@ -30,7 +30,7 @@ class CardtableController < ApplicationController
     if params[:submit] == "Deal"
       @cardtable.deal
     elsif params[:submit] == "Hit"
-      @cardtable.hit
+      @cardtable.hit(@cardtable.player, @cardtable.game.num_cards, @cardtable.game.card_count)
     elsif params[:submit] == "Stand"
       @cardtable.stand
     elsif params[:submit] == "Double"
@@ -38,7 +38,7 @@ class CardtableController < ApplicationController
     elsif params[:submit] == "Shuffle"
       @cardtable.shuffle
     elsif params[:submit] == "Deal For The Dealer"
-      @cardtable.goDealer
+      @cardtable.hit(@cardtable.dealer, @cardtable.game.dealer_num_cards, @cardtable.game.dealer_count)
     elsif params[:submit] == "<"
       @cardtable.setBet(@cardtable.bet - 1)
     elsif params[:submit] == ">"
