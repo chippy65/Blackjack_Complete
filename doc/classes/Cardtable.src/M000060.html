@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>startup (Cardtable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File app/models/cardtable.rb, line 12</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">startup</span>(<span class="ruby-identifier">thisplayer</span>)
+    <span class="ruby-comment cmt"># Setup its dealer, player and game associations</span>
+
+    <span class="ruby-comment cmt"># Find the dealer record and associate it with this cardtable object</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">find</span>(<span class="ruby-value">26</span>)
+    <span class="ruby-comment cmt"># Update the number of game sessions for the dealer</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">num_sessions</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">save</span>
+
+    <span class="ruby-comment cmt"># Associate the cardtable player with the logged in user</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span> = <span class="ruby-identifier">thisplayer</span>
+    <span class="ruby-comment cmt"># Update the user information regarding sessions</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">num_sessions</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">save</span>
+
+    <span class="ruby-comment cmt"># Set up a new game object and initialise it.</span>
+    <span class="ruby-identifier">newgame</span>
+
+    <span class="ruby-comment cmt"># Create a new shuffled desk of cards - we shuffle in case our logic always arranges</span>
+    <span class="ruby-comment cmt"># the cards in the deck the same way.</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deck</span> = <span class="ruby-constant">Deck</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">shuffle</span>
+
+    <span class="ruby-comment cmt"># Create a new dealer object</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span> = <span class="ruby-constant">Player</span>.<span class="ruby-identifier">new</span>
+
+    <span class="ruby-comment cmt"># Create a new player object</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span> = <span class="ruby-constant">Player</span>.<span class="ruby-identifier">new</span>
+
+    <span class="ruby-comment cmt"># Set the bet to be 5 initially</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span> = <span class="ruby-value">5</span>
+
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

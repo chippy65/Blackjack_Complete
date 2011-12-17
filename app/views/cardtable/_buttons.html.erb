@@ -58,7 +58,7 @@
   <%# Disable the SHUFFLE button if the game is on %>
   <%= submit_tag "Shuffle", :name => "submit", :disabled => gameOn %>
 
-  <%= image_tag "/images/chips.jpg" %>
+  <%= image_tag "/images/chips.gif" %>
   <%# Disable the REDUCE BET button if the game is on or the bet is 1 %>
   <% betStatus = gameOn || @cardtable.bet == 1 %>
   <%= submit_tag "<", :name => "submit", :disabled => betStatus %>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>double (Cardtable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/cardtable.rb, line 215</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">double</span>
+    <span class="ruby-comment cmt"># This is where the player chooses to double their initial bet</span>
+
+    <span class="ruby-comment cmt"># Double the bet</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">setBet</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>)
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">amount</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span>
+
+    <span class="ruby-comment cmt"># Deal one more card only</span>
+    <span class="ruby-identifier">hit</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span>)
+
+    <span class="ruby-comment cmt"># If they're not bust, give control to the dealer and play its hand</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>.<span class="ruby-identifier">score</span>.<span class="ruby-identifier">handScore</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">22</span>
+      <span class="ruby-identifier">stand</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

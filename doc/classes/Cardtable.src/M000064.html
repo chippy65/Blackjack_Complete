@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>hit (Cardtable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File app/models/cardtable.rb, line 159</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hit</span>(<span class="ruby-identifier">thisPlayer</span>, <span class="ruby-identifier">numCards</span>, <span class="ruby-identifier">cardCount</span>)
+    <span class="ruby-comment cmt"># This is where the player gets another card</span>
+
+    <span class="ruby-comment cmt"># Deal another card to the player</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deck</span>.<span class="ruby-identifier">deal</span>(<span class="ruby-identifier">thisPlayer</span>)
+
+    <span class="ruby-comment cmt"># Update the stats and save</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">thisPlayer</span> <span class="ruby-operator">===</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span> = <span class="ruby-identifier">thisPlayer</span>.<span class="ruby-identifier">score</span>.<span class="ruby-identifier">handScore</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_num_cards</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span> = <span class="ruby-identifier">thisPlayer</span>.<span class="ruby-identifier">score</span>.<span class="ruby-identifier">handScore</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">save</span>
+
+    <span class="ruby-comment cmt"># If the player is bust then we don't need to do anything - the stats have</span>
+    <span class="ruby-comment cmt"># already been saved and the view will take care of starting a new game </span>
+
+    <span class="ruby-comment cmt"># Try to rub salt into the player's wound by showing the</span>
+    <span class="ruby-comment cmt"># dealer's hidden card if the player has bust.</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+      <span class="ruby-comment cmt"># It's not the dealer who has been hit with a card but the player</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">21</span>
+        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span>.<span class="ruby-identifier">hand</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">faceup</span> = <span class="ruby-keyword kw">true</span>
+        <span class="ruby-identifier">endGame</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+
+      <span class="ruby-comment cmt"># if the dealer isn't winning yet...</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span> <span class="ruby-operator">&lt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span>
+        <span class="ruby-comment cmt"># Save the game as usual and wait for the next card to be dealt</span>
+        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">save</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">21</span>
+        <span class="ruby-comment cmt"># The dealer has bust</span>
+        <span class="ruby-comment cmt"># Should we tidy up the stats to show that the player has won</span>
+        <span class="ruby-comment cmt"># right here or leave that to 'endGame'?</span>
+        <span class="ruby-identifier">endGame</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-comment cmt"># The dealer has beaten the player</span>
+        <span class="ruby-identifier">endGame</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (Card)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/cardtable.rb, line 300</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">index</span>)
+    <span class="ruby-comment cmt"># Init the rank, suit, score and image of each card based on the</span>
+    <span class="ruby-comment cmt"># argument passed in</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">rank</span> = <span class="ruby-constant">RANKS</span>[<span class="ruby-identifier">index</span> <span class="ruby-operator">%</span> <span class="ruby-value">13</span>]
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">score</span> = <span class="ruby-constant">SCORES</span>[<span class="ruby-identifier">index</span> <span class="ruby-operator">%</span> <span class="ruby-value">13</span>]
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">suit</span> = <span class="ruby-constant">SUITS</span>[<span class="ruby-identifier">index</span> <span class="ruby-operator">%</span> <span class="ruby-value">4</span>]
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">image</span> = <span class="ruby-value str">&quot;/images/&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">rank</span> <span class="ruby-operator">+</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">suit</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;.png&quot;</span>
+
+    <span class="ruby-comment cmt"># By default, each card is assumed to be dealt face up. When we start</span>
+    <span class="ruby-comment cmt"># playing, only the second card of the dealer will be dealt face down.</span>
+    <span class="ruby-comment cmt"># When it is the dealer's turn to play, this card will be set to be face up</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">faceup</span> = <span class="ruby-keyword kw">true</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

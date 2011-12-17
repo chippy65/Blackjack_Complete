@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>endGame (Cardtable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File app/models/cardtable.rb, line 236</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">endGame</span>
+
+    <span class="ruby-comment cmt"># Call this function when we've determined that a game has finished.</span>
+    <span class="ruby-comment cmt"># This will save the stats.</span>
+
+    <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">21</span>
+      <span class="ruby-comment cmt"># If the dealer has gone bust, then the player has won. This is the</span>
+      <span class="ruby-comment cmt"># only situation where the player wins. We have to reverse the stats</span>
+      <span class="ruby-comment cmt"># where we assumed that the player would lose before saving the stats</span>
+
+      <span class="ruby-comment cmt"># We add twice the bet to the player and subtract from the dealer</span>
+      <span class="ruby-comment cmt"># This is because we already subtracted the bet from the player and</span>
+      <span class="ruby-comment cmt"># added to the dealer at teh start of this game</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">balance</span> <span class="ruby-operator">+=</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">balance</span> <span class="ruby-operator">-=</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span> <span class="ruby-operator">*</span> <span class="ruby-value">2</span>
+
+      <span class="ruby-comment cmt"># Similarly, we assumed that the player lost and the dealer won</span>
+      <span class="ruby-comment cmt"># So, we change this accordingly</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_lost</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_won</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_won</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_lost</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">win</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-comment cmt"># Save the game stats, and for the dealer and player</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">save</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">save</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">save</span>
+
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

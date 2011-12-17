@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>playgame (CardtableController)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File app/controllers/cardtable_controller.rb, line 23</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">playgame</span>
+
+    <span class="ruby-comment cmt"># There should only be one record in the database as there's only one</span>
+    <span class="ruby-comment cmt"># cardtable session in progress at any one time</span>
+    <span class="ruby-ivar">@cardtable</span> = <span class="ruby-constant">Cardtable</span>.<span class="ruby-identifier">first</span>
+
+    <span class="ruby-comment cmt"># Find out which button was hit and perform the appropriate action</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;Deal&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">deal</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;Hit&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">hit</span>(<span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">player</span>, <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span>, <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span>)
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;Stand&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">stand</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;Double&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">double</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;Shuffle&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">shuffle</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;Deal For The Dealer&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">hit</span>(<span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">dealer</span>, <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_num_cards</span>, <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span>)
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;&lt;&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">setBet</span>(<span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">bet</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>)
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:submit</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">&quot;&gt;&quot;</span>
+      <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">setBet</span>(<span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">bet</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>)
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-comment cmt"># Save this instance so we can get it and use it again</span>
+    <span class="ruby-ivar">@cardtable</span>.<span class="ruby-identifier">save</span>
+
+    <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> {<span class="ruby-identifier">render</span> <span class="ruby-identifier">:action</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;default&quot;</span> }
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

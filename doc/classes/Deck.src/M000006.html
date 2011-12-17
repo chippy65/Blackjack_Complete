@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>deal (Deck)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/cardtable.rb, line 328</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">deal</span>(<span class="ruby-identifier">player</span>)
+    <span class="ruby-comment cmt"># Add the next card in the deck to the player's hand</span>
+    <span class="ruby-comment cmt"># We need to copy the card object from the deck before appending to the hand</span>
+    <span class="ruby-comment cmt"># as it will be referenced otherwise. This can cause the deck card to be 'faceup = false'</span>
+    <span class="ruby-comment cmt"># when we set this attribute for the dealer's second card. This will mean that when the</span>
+    <span class="ruby-comment cmt"># deck loops around on itself, that card will be dealt facedown which is wrong!</span>
+    <span class="ruby-identifier">player</span>.<span class="ruby-identifier">hand</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">cards</span>[<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">nextcard</span>].<span class="ruby-identifier">dup</span>
+    <span class="ruby-identifier">player</span>.<span class="ruby-identifier">score</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">cards</span>[<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">nextcard</span>].<span class="ruby-identifier">score</span>.<span class="ruby-identifier">to_i</span>
+
+    <span class="ruby-comment cmt"># And then increment the position in the deck of the next card to be dealt</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">nextcard</span> = (<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">nextcard</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>) <span class="ruby-operator">%</span> <span class="ruby-value">52</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>newgame (Cardtable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/cardtable.rb, line 46</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">newgame</span>
+
+    <span class="ruby-comment cmt"># Create a new game object/record but don't save it just yet</span>
+    <span class="ruby-comment cmt"># as the player may not actually decide to play a game in this session</span>
+    <span class="ruby-ivar">@game</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">build_game</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span> = <span class="ruby-ivar">@game</span>
+
+    <span class="ruby-comment cmt"># Initialize the game stats for this game</span>
+    <span class="ruby-comment cmt"># We do this here for statistical purposes as it is legal for a session</span>
+    <span class="ruby-comment cmt"># that has no games played</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">user</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">session_num</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">num_sessions</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_session_num</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">num_sessions</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">game_num</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_game_num</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">win</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">amount</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_num_cards</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

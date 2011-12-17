@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>deal (Cardtable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File app/models/cardtable.rb, line 71</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">deal</span>
+    <span class="ruby-comment cmt"># This is the beginning of a new game</span>
+
+    <span class="ruby-comment cmt"># Clear out any old game data to reset</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">game_num</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+
+      <span class="ruby-comment cmt"># We need to call endGame to save the stats from teh previous game. This</span>
+      <span class="ruby-comment cmt"># is necessary as the player could have hit 'stand' and the lost</span>
+      <span class="ruby-comment cmt"># immediately to the dealer's 2 cards. In this case, the game will not</span>
+      <span class="ruby-comment cmt"># have been saved.</span>
+      <span class="ruby-identifier">endGame</span>
+
+      <span class="ruby-comment cmt"># Reset the game stuff so it can be used later in the method</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">win</span> = <span class="ruby-keyword kw">false</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_num_cards</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_count</span> = <span class="ruby-value">0</span>, <span class="ruby-value">0</span>
+
+      <span class="ruby-comment cmt"># Reset the player and dealer objects</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>.<span class="ruby-identifier">reset</span>
+
+      <span class="ruby-comment cmt"># If we don't make the second dealer card faceup, then this could be</span>
+      <span class="ruby-comment cmt"># dealt to a player - not sure this is true really as cards are dealt from the deck</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span>.<span class="ruby-identifier">hand</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">faceup</span> = <span class="ruby-keyword kw">true</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span>.<span class="ruby-identifier">reset</span>
+
+      <span class="ruby-comment cmt"># Create a new game object and initialise it</span>
+      <span class="ruby-identifier">newgame</span>
+    <span class="ruby-keyword kw">end</span>
+
+
+    <span class="ruby-comment cmt"># Deal 2 cards to both the dealer and the player</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deck</span>.<span class="ruby-identifier">deal</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>)
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deck</span>.<span class="ruby-identifier">deal</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>)
+
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deck</span>.<span class="ruby-identifier">deal</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span>)
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">deck</span>.<span class="ruby-identifier">deal</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span>)
+    <span class="ruby-comment cmt"># The second card dealt to the dealer is face down</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer</span>.<span class="ruby-identifier">hand</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">faceup</span> = <span class="ruby-keyword kw">false</span>
+
+    <span class="ruby-comment cmt"># Update the number of games played by the player and dealer</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_played</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_played</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+
+    <span class="ruby-comment cmt"># We subtract the bet from the player and add to the dealer</span>
+    <span class="ruby-comment cmt"># This is in case the player exits the game before it completes</span>
+    <span class="ruby-comment cmt"># When the game completes naturally, we will take this into consideration</span>
+    <span class="ruby-comment cmt"># Think of this as the dealer holding the pot while the game is playing</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">balance</span> <span class="ruby-operator">-=</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">balance</span> <span class="ruby-operator">+=</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span>
+
+    <span class="ruby-comment cmt"># Similarly, we assume that the player will lost and the dealer will win</span>
+    <span class="ruby-comment cmt"># in case the game terminates unexpectedly</span>
+    <span class="ruby-comment cmt"># Again, we will take this into consideration if the game ends normally</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_lost</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_won</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+
+    <span class="ruby-comment cmt"># Update the games per session average for the player and dealer</span>
+    <span class="ruby-identifier">avg</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_played</span> <span class="ruby-operator">/</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">num_sessions</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">avg</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_per_session_avg</span> = <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_per_session_avg</span> = <span class="ruby-identifier">avg</span>.<span class="ruby-identifier">floor</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">avg</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_played</span> <span class="ruby-operator">/</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">num_sessions</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">avg</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_per_session_avg</span> = <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_per_session_avg</span> = <span class="ruby-identifier">avg</span>.<span class="ruby-identifier">floor</span>
+    <span class="ruby-keyword kw">end</span>
+
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">save</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">save</span>
+
+    <span class="ruby-comment cmt"># Update the game stats</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">game_num</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player_record</span>.<span class="ruby-identifier">games_played</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">dealer_game_num</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dealer_record</span>.<span class="ruby-identifier">games_played</span>
+
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">amount</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bet</span>
+
+    <span class="ruby-comment cmt"># We will only update the players cards so that a 0 number of cards</span>
+    <span class="ruby-comment cmt"># for the dealer signifies that the dealer won before playing his hand</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">num_cards</span> = <span class="ruby-value">2</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">card_count</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">player</span>.<span class="ruby-identifier">score</span>.<span class="ruby-identifier">handScore</span>
+
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">save</span>
+
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
